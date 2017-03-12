@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A layout example that shows off a blog page with a list of posts.">
+        <title>slegetank's blog</title>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
+        <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/grids-responsive-min.css">
+        <!--<![endif]-->
+        <!--[if gt IE 8]><!-->
+        <link rel="stylesheet" type="text/css" href="{{ url_for('blog.static', filename='blog.css') }}">
+        <!--<![endif]-->
+        <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+        <script>
+         var blogCount = {{ count }};
+         var blogType = "{{ blogtype }}";
+         $(document).ready(function(){
+             $("#moreblog").on("click", function(){
+                 var url = "{{ moreurl }}"+"?from="+blogCount+"&count={{ PAGE_COUNT }}";
+                 if (blogType.length != 0){
+                     url += "&blogtype="+encodeURI($.trim(blogType));
+                 }
+                 $.get(url,function(data,status){
+                     if(status == 'success'){
+                         data = jQuery.parseJSON(data)
+                         $("#blogs").append(data["data"]);
+                         blogCount += data["count"];
+                         if(data["count"] != {{ PAGE_COUNT }}){
+                             $("#moreblog").hide();
+                         }
+                     }
+                 });
+             });
+
+         });
+        </script>
+    </head>
+    <body>
+
+        <!-- Left bar -->
+        <div id="layout" class="pure-g">
+            <div class="sidebar pure-u-1 pure-u-md-1-4">
+                <div class="header">
+                    <h1 class="brand-title">slegetank's blog</h1>
+                    <h2 class="brand-tagline">Code My Life</h2>
+
+                    <nav class="nav">
+                        <ul class="nav-list">
+                            <li class="nav-item">
+                                <a class="pure-button" href="https://github.com/slegetank">Github</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="pure-button" href="https://gitlab.com/slegetank">Gitlab</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="content pure-u-1 pure-u-md-3-4">
+                <div>
+                    <div class="posts" id="blogs">
+                        <h1 class="content-subhead">
+                            {% if blogtype|length != 0 %}
+                            {{ blogtype }}
+                            {% else %}
+                            Recent Posts
+                            {% endif %}
+                        </h1>
+                        {% for blogObj in blogs: %}
+                        <section class="post">
+                            <header class="post-header">
+                                <h2 class="post-title">
+                                    <a href={{ url_for("blog.article", orgname=blogObj.filename) }}>{{ blogObj.title }}</a>
+                                </h2>
+
+                                <p class="post-meta">
+                                    {{ blogObj.format_writetime }} <a class="post-category post-category-{{ blogObj.css_type }}" href={{ ""+typeurl+"?blogtype="+blogObj.type.strip()|urlencode() }}>{{ blogObj.type }}</a>
+                                </p>
+                            </header>
+
+                            <div class="post-description">
+                                <p>{{ blogObj.desc }}</p>
+                                {% if blogObj.imageArray %}
+                                <div class="post-images pure-g">
+                                {% for image in blogObj.imageArray %}
+                                <div class="pure-u-1 pure-u-md-1-2">
+                                        <img class="pure-img-responsive" src="{{ image }}">
+                                </div>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </section>
+                        {% endfor %}
+                    </div>
+                    {% if count == PAGE_COUNT %}
+                    <a id="moreblog">Load More...</a>
+                    {% endif %}
+                    <div class="footer">
+                        <div class="pure-menu pure-menu-horizontal">
+                            <ul>
+                                <li class="pure-menu-item"><a href="http://purecss.io/" class="pure-menu-link">About</a></li>
+                                <li class="pure-menu-item"><a href="http://twitter.com/yuilibrary/" class="pure-menu-link">Twitter</a></li>
+                                <li class="pure-menu-item"><a href="http://github.com/yahoo/pure/" class="pure-menu-link">GitHub</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+    </body>
+</html>
