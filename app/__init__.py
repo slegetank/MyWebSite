@@ -19,7 +19,7 @@ def create_app(config_name):
     elif config_name == "release":
         app.config['SERVER_NAME'] = 'slegetank.com'
         app.url_map.default_subdomain="www"
-        app.register_blueprint(blog, subdomain="blog")
+        app.register_blueprint(blog, subdomain="blog", static_url_path="/static/blog")
 
         os.environ['MYWEBSITE_HOST'] = "localhost"
 
