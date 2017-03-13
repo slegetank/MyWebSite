@@ -47,7 +47,7 @@ def index():
 @blog.route('/article/<orgname>')
 def article(orgname):
     blogtype = request.args.get("blogtype", "")
-    orgPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "blog_static/MyBlogOrg/blog/%s" % orgname)
+    orgPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static/MyBlogOrg/blog/%s" % orgname)
 
     if orgname and os.path.exists(orgPath):
         return render_template("article.html",
