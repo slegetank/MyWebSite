@@ -7,12 +7,6 @@ db = SQLAlchemy()
 def create_app(config_name):
     app = Flask(__name__, static_folder=None)
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:%s@%s/mywebsite?charset=utf8' % (os.getenv('MYWEBSITE_DB_PASS'), os.getenv('MYWEBSITE_HOST'))
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SERVER_NAME'] = 'slegetank.com'
-
-    db.init_app(app)
-
     # main
     from main import main
     app.register_blueprint(main)
@@ -23,6 +17,7 @@ def create_app(config_name):
         os.environ['MYWEBSITE_HOST'] = "slegetank.com"
         app.register_blueprint(blog, url_prefix='/blogs')
     elif config_name == "release":
+        app.config['SERVER_NAME'] = 'slegetank.com'
         app.url_map.default_subdomain="www"
         app.static_url_path = "/static"
         app.static_folder = "static"
@@ -35,5 +30,11 @@ def create_app(config_name):
         os.environ['MYWEBSITE_HOST'] = "localhost"
 
     os.environ['MYWEBSITE_DB_PASS'] = "Wiimu123456"
+
+    # db
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:%s@%s/mywebsite?charset=utf8' % (os.getenv('MYWEBSITE_DB_PASS'), os.getenv('MYWEBSITE_HOST'))
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    db.init_app(app)
 
     return app
