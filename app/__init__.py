@@ -5,7 +5,7 @@ import os
 db = SQLAlchemy()
 
 def create_app(config_name):
-    app = Flask(__name__, static_folder=None)
+    app = Flask(__name__)
 
     # main
     from main import main
@@ -19,12 +19,6 @@ def create_app(config_name):
     elif config_name == "release":
         app.config['SERVER_NAME'] = 'slegetank.com'
         app.url_map.default_subdomain="www"
-        app.static_url_path = "/static"
-        app.static_folder = "static"
-        app.add_url_rule(app.static_url_path + '/<path:filename>',
-                         endpoint='static',
-                         view_func=app.send_static_file,
-                         subdomain="static")
         app.register_blueprint(blog, subdomain="blog")
 
         os.environ['MYWEBSITE_HOST'] = "localhost"
