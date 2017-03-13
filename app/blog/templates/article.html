@@ -13,26 +13,34 @@
         <script src={{ url_for('static', filename='org.js') }}></script>
         <link rel="stylesheet" type="text/css" href="{{ url_for('blog.static', filename='article.css') }}">
         <script>
-         $(document).ready(function(){
-             var parser = new Org.Parser();
+            $(document).ready(function(){
+            var parser = new Org.Parser();
 
-             $.get("{{ orgurl }}",function(data,status){
-                 if (status == 'success'){
-                     var orgcode = data;
-                     var orgDocument = parser.parse(orgcode);
-                     var orgHTMLDocument = orgDocument.convert(Org.ConverterHTML, {
-                         headerOffset: 1,
-                         exportFromLineNumber: false,
-                         suppressSubScriptHandling: false,
-                         suppressAutoLink: false
-                     });
-                     $("#article").prepend(orgHTMLDocument["contentHTML"]);
-                     $("#blogtitle").text(orgHTMLDocument["title"]);
-                     $(".blogtoc").html(orgHTMLDocument["tocHTML"]);
-                 }
-             });
+            $.get("{{ orgurl }}",function(data,status){
+            if (status == 'success'){
+            var orgcode = data;
+            var orgDocument = parser.parse(orgcode);
+            var orgHTMLDocument = orgDocument.convert(Org.ConverterHTML, {
+            headerOffset: 1,
+            exportFromLineNumber: false,
+            suppressSubScriptHandling: false,
+            suppressAutoLink: false
+            });
+            $(".article").prepend(orgHTMLDocument["contentHTML"]);
+            $(".blogtitle").html("<h1>"+orgHTMLDocument["title"]+"</h1>");
+            $(".blogtoc").html(orgHTMLDocument["tocHTML"]);
+            $(".article").find("table").addClass("pure-table pure-table-bordered");
+            $(".article").find("img").attr("src",function(index,oldvalue)
+            {
+            var imgname = oldvalue.substring(oldvalue.lastIndexOf('/') + 1);
+            $(this).attr("src", "{{ imgdir }}"+imgname);
+            $(this).attr("alt", "{{ imgdir }}"+imgname);
+            $(this).attr("title", imgname);
+            });
+            }
+            });
 
-         });
+            });
         </script>
     </head>
     <body>
@@ -41,19 +49,19 @@
         <div id="layout" class="pure-g">
             <div class="sidebar pure-u-1 pure-u-md-1-4">
                 <div class="header">
-                    <h2 class="brand-title" id="blogtitle"></h2>
+                <h2 class="brand-title">Table Of Contents</h2>
                 </div>
                 <div class="blogtoc"></div>
             </div>
 
             <div class="content pure-u-1 pure-u-md-3-4">
-                <div id="article">
+                <div class="blogtitle"></div>
+                <div class="article">
                     <div class="footer">
                         <div class="pure-menu pure-menu-horizontal">
                             <ul>
-                                <li class="pure-menu-item"><a href="http://purecss.io/" class="pure-menu-link">About</a></li>
-                                <li class="pure-menu-item"><a href="http://twitter.com/yuilibrary/" class="pure-menu-link">Twitter</a></li>
-                                <li class="pure-menu-item"><a href="http://github.com/yahoo/pure/" class="pure-menu-link">GitHub</a></li>
+                                <li class="pure-menu-item"><a href="{{ url_for(".index") }}" class="pure-menu-link">Blog</a></li>
+                                <li class="pure-menu-item"><a href="http://github.com/slegetank" class="pure-menu-link">GitHub</a></li>
                             </ul>
                         </div>
                     </div>

@@ -49,6 +49,8 @@ def article(orgname):
     orgPath = os.path.join(os.path.dirname(os.path.abspath(__file__)), "static/MyBlogOrg/blog/%s" % orgname)
 
     if orgname and os.path.exists(orgPath):
-        return render_template("article.html", orgurl=url_for("blog.static", filename="MyBlogOrg/blog/%s" % orgname))
+        return render_template("article.html",
+                               orgurl=url_for("blog.static", filename="MyBlogOrg/blog/%s" % orgname),
+                               imgdir=url_for("blog.static", filename="MyBlogOrg/static/"))
 
     return "404"
