@@ -1,6 +1,10 @@
 from app import create_app
 
-app = create_app('debug')
+config = 'debug'
+app = create_app(config)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    if config == 'debug':
+        app.run(debug=True)
+    else:
+        app.run(debug=False)
