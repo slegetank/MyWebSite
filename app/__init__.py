@@ -5,21 +5,24 @@ import os
 db = SQLAlchemy()
 
 def create_app(config_name):
-    app = Flask(__name__)
+    app = Flask(__name__, static_folder="static")
 
     # main
     from main import main
-    app.register_blueprint(main)
 
     # blog
     from blog import blog
     if config_name == "debug":
         os.environ['MYWEBSITE_HOST'] = "slegetank.com"
         app.register_blueprint(blog, url_prefix='/blogs')
+        app.register_blueprint(main)
     elif config_name == "release":
         app.config['SERVER_NAME'] = 'slegetank.com'
         app.url_map.default_subdomain="www"
-        app.register_blueprint(blog, subdomain="blog", static_url_path="/static/blog")
+        app.config['SESSION_COOKIE_DOMAIN'] = 'slegetank.com'
+
+        app.register_blueprint(blog, subdomain="blog")
+        app.register_blueprint(main)
 
         os.environ['MYWEBSITE_HOST'] = "localhost"
 

@@ -12,7 +12,7 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 blog_remote_url = "https://github.com/slegetank/MyBlogOrg"
-blog_local_path = os.path.abspath("static/MyBlogOrg")
+blog_local_path = os.path.abspath("blog_static/MyBlogOrg")
 blog_org_path = "%s/blog" % blog_local_path
 
 def getFileInfo(filename):
