@@ -26,8 +26,6 @@ def create_app(config_name):
 
         os.environ['MYWEBSITE_HOST'] = "localhost"
 
-    os.environ['MYWEBSITE_DB_PASS'] = "Wiimu123456"
-
     # db
     app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:%s@%s/mywebsite?charset=utf8' % (os.getenv('MYWEBSITE_DB_PASS'), os.getenv('MYWEBSITE_HOST'))
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
